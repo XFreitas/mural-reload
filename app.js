@@ -3,6 +3,17 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+const { Server } = require('socket.io');
+
+const io = new Server(3100,{
+  cors:{
+    origin:'http://127.0.0.1:3000'
+  }
+});
+
+io.on('connection', socket => {
+  console.log(`${socket.id} conectou`);
+});
 
 const livereload = require('livereload');
 const connectLivereload = require('connect-livereload');
@@ -30,6 +41,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'node_modules')));
 
 app.use('/', indexRouter);
 app.use('/admin', adminRouter);
